@@ -11,6 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.muliusapp.ui.navigation.Destination
+import com.example.muliusapp.ui.screens.Login.LoginScreen
+import com.example.muliusapp.ui.screens.Main.MainScreen
+import com.example.muliusapp.ui.screens.NumberGenerator.NumberGeneratorScreen
 import com.example.muliusapp.ui.theme.MuliUsappTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,11 +26,27 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MuliUsappTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Scaffold() { innerPaddings ->
+                    val navController = rememberNavController()
+                    NavHost(
+                        modifier = Modifier.fillMaxSize().padding(innerPaddings),
+                        navController = navController,
+                        startDestination = Destination.Login
+                    ) {
+                        composable<Destination.Login> {
+                            LoginScreen(
+                                toMainScreen = {navController.navigate(Destination.MainScreen)}
+                            )
+                        }
+                        composable<Destination.MainScreen> {
+                            MainScreen(
+                                toNumberGenerator = {navController.navigate(Destination.NumberGenerator)}
+                            )
+                        }
+                        composable<Destination.NumberGenerator> {
+                            NumberGeneratorScreen()
+                        }
+                    }
                 }
             }
         }
